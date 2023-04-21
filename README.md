@@ -17,3 +17,16 @@ Home Manager will install a suite of packages useful for work. To keep these pac
 ```sh
 nix flake update ~/.config/home-manager && home-manager switch
 ```
+
+The user's shell is `ble.sh`. `ble.sh` has a Nix package but it's out of date. To use `ble.sh` run
+
+```sh
+git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git
+make -C ble.sh install PREFIX=~/.local
+```
+
+You'll need to re-enter your Bash shell to use `ble.sh`. To update run 
+
+```sh
+ble-update
+```

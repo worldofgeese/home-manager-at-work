@@ -8,24 +8,25 @@
           enableBashIntegration = true;
           nix-direnv.enable = true;
         };
+        programs.vscode = {
+          enable = true;
+        };
         programs.exa = {
           enable = true;
           enableAliases = true;
         };
         programs.bash = {
           enable = true;
-          bashrcExtra = ''
-            source ~/.nix-profile/share/blesh/ble.sh
-            '';
           enableVteIntegration = true;
           historyIgnore = [ "ls" "cd" "exit" "gopass" ];
           shellAliases = {
             cat = "bat";
             cd = "z";
           };
+          bashrcExtra = ''
+            source ~/.local/share/blesh/ble.sh
+          '';
           sessionVariables = {
-            XDG_DATA_DIRS =
-              "/usr/local/share/:/usr/share/:$HOME/.nix-profile/share/";
             CHAMBER_KMS_KEY_ALIAS = "aws/ssm";
             BROWSER = "wsl-open";
             AWS_VAULT_PASS_PREFIX = "aws-vault";
@@ -107,6 +108,7 @@
         home.stateVersion = "22.11";
         home.sessionPath =
           [ "$HOME/bin" "$HOME/.local/bin" "$HOME/.garden/bin" "$HOME/.arkade/bin/" "/mnt/c/Users/Tao Hansen/AppData/Local/Programs/Microsoft VS Code/bin" "$HOME/.npm-global/bin" "$HOME/.volta/bin" ];
+        xdg.systemDirs.data = [ "/usr/local/share" "/usr/share" "$HOME/.nix-profile/share" ];
         home.packages = with pkgs; [
           # # Adds the 'hello' command to your environment. It prints a friendly
           # # "Hello, world!" when run.
@@ -143,7 +145,6 @@
           arkade
           fluxcd
           k9s
-          blesh
           topgrade
           kompose
           scaleway-cli
@@ -158,7 +159,7 @@
           gh
           eksctl
           yq
-          #(google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
+          (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
         ];
       home.file.".aws/config".text = ''
         [profile taohansen]

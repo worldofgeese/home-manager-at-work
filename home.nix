@@ -169,4 +169,18 @@
         sso_role_name=CommunityEngineerAccess
         region = eu-central-1
       '';
+      home.file.".local/share/applications/code.desktop".text = ''
+        [Desktop Entry]
+        Icon=code
+        Type=Application
+        Name=Visual Studio Code
+        Exec=/home/taohansen/.nix-profile/bin/code %F
+        StartupNotify=true
+        StartupWMClass=Code
+        
+        [Desktop Action new-empty-window]
+        Exec=code --new-window %F
+        Icon=code
+        Name=New Empty Window
+      '';
 }

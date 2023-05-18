@@ -10,6 +10,13 @@
         };
         programs.vscode = {
           enable = true;
+          package = (pkgs.vscode.override{ isInsiders = true; }).overrideAttrs (oldAttrs: rec {
+      src = (builtins.fetchTarball {
+        url = "https://update.code.visualstudio.com/latest/linux-x64/insider";
+        sha256 = "0zb6hw5js6dff0a7rl4dzgn7za8swx4rr1zdbagm8ag5qny60nhi";
+      });
+      version = "latest";
+    });
         };
         programs.exa = {
           enable = true;
@@ -25,6 +32,8 @@
           };
           bashrcExtra = ''
             source ~/.local/share/blesh/ble.sh
+            PATH=$PATH:~/.volta/bin
+            eval "$(github-copilot-cli alias -- "$0")"
           '';
           sessionVariables = {
             CHAMBER_KMS_KEY_ALIAS = "aws/ssm";
@@ -160,6 +169,7 @@
           eksctl
           yq
           (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
+          terraform
         ];
       home.file.".aws/config".text = ''
         [profile taohansen]
@@ -169,17 +179,17 @@
         sso_role_name=CommunityEngineerAccess
         region = eu-central-1
       '';
-      home.file.".local/share/applications/code.desktop".text = ''
+      home.file.".local/share/applications/code-insiders.desktop".text = ''
         [Desktop Entry]
         Icon=code
         Type=Application
-        Name=Visual Studio Code
-        Exec=/home/taohansen/.nix-profile/bin/code %F
+        Name=Code - Insiders
+        Exec=/home/taohansen/.nix-profile/bin/code-insiders %F
         StartupNotify=true
         StartupWMClass=Code
         
         [Desktop Action new-empty-window]
-        Exec=code --new-window %F
+        Exec=code-insiders --new-window %F
         Icon=code
         Name=New Empty Window
       '';

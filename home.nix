@@ -30,6 +30,8 @@
       cat = "bat";
       cd = "z";
       cursor = "/home/taohansen/AppImages/gearlever_cursor_aa2ec3.appimage";
+      g = "garden";
+      gd = "garden deploy -l3";
     };
     bashrcExtra = ''
       source ~/.local/share/blesh/ble.sh
@@ -119,7 +121,7 @@
     };
   };
   programs.broot = {
-    enable = true;
+    enable = false;
     settings.modal = true;
   };
   programs.jq.enable = true;
@@ -132,6 +134,33 @@
   programs.git = {
     enable = true;
     package = pkgs.gitFull;
+    aliases = {
+      # List available aliases
+      aliases = "!git config --get-regexp alias | sed -re 's/alias\\.(\\S*)\\s(.*)$/\\1 = \\2/g'";
+      # Command shortcuts
+      ci = "commit";
+      co = "checkout";
+      st = "status";
+      # Display tree-like log, because default log is a pain…
+      lg = "log --graph --date=relative --pretty=tformat:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%an %ad)%Creset'";
+      # Useful when you have to update your last commit
+      # with staged files without editing the commit message.
+      oops = "commit --amend --no-edit";
+      # Ensure that force-pushing won't lose someone else's work (only mine).
+      push-with-lease = "push --force-with-lease";
+      # Rebase won’t trigger hooks on each "replayed" commit.
+      # This is an ugly hack that will replay each commit during rebase with the
+      # standard `commit` command which will trigger hooks.
+      rebase-with-hooks = "rebase -x 'git reset --soft HEAD~1 && git commit -C HEAD@{1}'";
+      # List local commits that were not pushed to remote repository
+      review-local = "!git lg @{push}..'";
+      # Edit last commit message
+      reword = "commit --amend";
+      # Undo last commit but keep changed files in stage
+      uncommit = "reset --soft HEAD~1";
+      # Remove file(s) from Git but not from disk
+      untrack = "rm --cache --";
+    };
     extraConfig = {
       credential.helper = "${
         pkgs.git.override {withLibsecret = true;}
@@ -147,6 +176,11 @@
       gpg.format = "ssh";
       user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBPg7covTDtBL044ZbH+VmsCEgP7aGWAvfBncySB3hyV";
       gpg."ssh".program = "/opt/1Password/op-ssh-sign";
+      pull.rebase = "true";
+      rebase.autosquash = "true"; # automatically squash fixup and squash commits
+      rebase.autostash = "true"; # automatically stash then unstash uncommitted work when rebasing
+      fetch.prune = "true";
+      diff.colorMoved = "zebra";
       # uncomment to use Git Credential Manager in  Windows Subsystem for Linux
       # credential.helper = "/mnt/c/Users/Tao\\ Hansen/scoop/apps/git-credential-manager/current/git-credential-manager.exe";
       # gpg."ssh".program = "/mnt/c/Users/Tao Hansen/AppData/Local/1Password/app/8/op-ssh-sign.exe";
@@ -218,7 +252,9 @@
     github-desktop
     fh
     dura
-    jujutsu
+    kubefirst
+    mkcert
+    ffmpeg
   ];
   home.file.".aws/config".text = ''
     [profile taohansen]

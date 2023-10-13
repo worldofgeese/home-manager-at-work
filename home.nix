@@ -2,9 +2,10 @@
   # Home Manager has an option to automatically set some environment
   # variables that will ease usage of software installed with nix on
   # non-NixOS linux (fixing local issues, settings XDG_DATA_DIRS, etc.):
+  # As already mentioned
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
-  xdg.systemDirs.data = ["$HOME/.nix_profile/share"];
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -29,20 +30,22 @@
     shellAliases = {
       cat = "bat";
       cd = "z";
-      cursor = "/home/taohansen/AppImages/gearlever_cursor_aa2ec3.appimage";
+      cursor = "/home/worldofgeese/AppImages/gearlever_cursor_aa2ec3.appimage";
       g = "garden";
       gd = "garden deploy -l3";
+      code = "code --ozone-platform-hint=''";
     };
     bashrcExtra = ''
       source ~/.local/share/blesh/ble.sh
       PATH=$PATH:~/.volta/bin:~/.config/Code/User/globalStorage/ms-vscode-remote.remote-containers/cli-bin
+      eval "$(dagger completion bash)"
       eval "$(github-copilot-cli alias -- "$0")"
       case $- in
         *i*) ;;
           *) return;;
       esac
 
-      export OSH='/home/taohansen/.oh-my-bash'
+      export OSH='/home/worldofgeese/.oh-my-bash'
 
       OSH_THEME="font"
 
@@ -106,6 +109,8 @@
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
     NIXOS_OZONE_WL = "1";
     VOLTA_FEATURE_PNPM = "1";
+    PATH = "$HOME/.nix-profile/bin:$PATH"; # fix Sway's PATH sourcing
+    XDG_CURRENT_DESKTOP = "sway"; # fix screensharing on Sway
   };
   programs.bat.enable = true;
   programs.zoxide = {
@@ -196,7 +201,7 @@
     '';
   };
   programs.starship = {
-    enable = true;
+    enable = false;
     settings = {
       kubernetes = {disabled = false;};
       nodejs = {disabled = true;};
@@ -204,8 +209,8 @@
   };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-  home.username = "taohansen";
-  home.homeDirectory = "/home/taohansen";
+  home.username = "worldofgeese";
+  home.homeDirectory = "/home/worldofgeese";
   home.stateVersion = "22.11";
   home.sessionPath = ["$HOME/.garden/bin" "$HOME/.arkade/bin/" "/mnt/c/Users/Tao Hansen/AppData/Local/Programs/Microsoft VS Code/bin" "$HOME/.rd/bin" "$HOME/.local/bin"];
   home.packages = with pkgs; [
@@ -255,20 +260,20 @@
     kubefirst
     mkcert
     ffmpeg
+    volta
+    jetbrains.pycharm-community
+    grim
+    slurp
+    swappy
+    wlsunset
+    python-launcher
   ];
   home.file.".aws/config".text = ''
-    [profile taohansen]
+    [profile worldofgeese]
     sso_start_url=https://garden-io.awsapps.com/start
     sso_region=eu-central-1
     sso_account_id=431328314483
     sso_role_name=CommunityEngineerAccess
     region = eu-central-1
-  '';
-  home.file.".local/share/applications/1password.desktop".text = ''
-    [Desktop Entry]
-    Icon=1password
-    Type=Application
-    Name=1Password
-    Exec=/opt/1Password/1password
   '';
 }

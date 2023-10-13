@@ -15,7 +15,7 @@
     let
       system = "x86_64-linux";
     in {
-      homeConfigurations.taohansen = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations.worldofgeese = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;

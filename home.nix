@@ -109,6 +109,7 @@
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
     NIXOS_OZONE_WL = "1";
     VOLTA_FEATURE_PNPM = "1";
+    GUIX_LOCPATH = "$HOME/.guix-profile/lib/locale"
     PATH = "$HOME/.nix-profile/bin:$PATH"; # fix Sway's PATH sourcing
     XDG_CURRENT_DESKTOP = "sway"; # fix screensharing on Sway
   };

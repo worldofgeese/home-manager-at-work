@@ -5,6 +5,7 @@
   # As already mentioned
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
+  xdg.systemDirs.data = ["$HOME/.guix-profile/share"];
 
   programs.direnv = {
     enable = true;
@@ -36,10 +37,15 @@
       code = "code --ozone-platform-hint=''";
     };
     bashrcExtra = ''
+      # GUIX_PROFILE needs to be set inside .bashrc or it will be overwritten. It must be set and sourced twice because we are managing two Guix profiles: one for packages installed with Guix and one to manage the Guix binary itself.
+      GUIX_PROFILE="$HOME/.guix-profile"
+      . "$GUIX_PROFILE/etc/profile"
+      GUIX_PROFILE="$HOME/.config/guix/current"
+      . "$GUIX_PROFILE/etc/profile"
       source ~/.local/share/blesh/ble.sh
       PATH=$PATH:~/.volta/bin:~/.config/Code/User/globalStorage/ms-vscode-remote.remote-containers/cli-bin
-      eval "$(dagger completion bash)"
-      eval "$(github-copilot-cli alias -- "$0")"
+      [[ -x "$(command -v dagger)" ]] && eval "$(dagger completion bash)"
+      [[ -x "$(command -v github-copilot-cli)" ]] && eval "$(github-copilot-cli alias -- "$0")"
       case $- in
         *i*) ;;
           *) return;;
@@ -109,7 +115,7 @@
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";
     NIXOS_OZONE_WL = "1";
     VOLTA_FEATURE_PNPM = "1";
-    GUIX_LOCPATH = "$HOME/.guix-profile/lib/locale"
+    GUIX_LOCPATH = "$HOME/.guix-profile/lib/locale";
     PATH = "$HOME/.nix-profile/bin:$PATH"; # fix Sway's PATH sourcing
     XDG_CURRENT_DESKTOP = "sway"; # fix screensharing on Sway
   };
@@ -215,7 +221,7 @@
   home.stateVersion = "22.11";
   home.sessionPath = ["$HOME/.garden/bin" "$HOME/.arkade/bin/" "/mnt/c/Users/Tao Hansen/AppData/Local/Programs/Microsoft VS Code/bin" "$HOME/.rd/bin" "$HOME/.local/bin"];
   home.packages = with pkgs; [
-    awscli2 # Unified tool to manage your AWS services
+    # awscli2 # Unified tool to manage your AWS services
     rsync # A fast incremental file transfer utility
     xh # Friendly and fast tool for sending HTTP requests
     ripgrep # A utility that combines the usability of The Silver Searcher with the raw speed of grep
@@ -258,7 +264,6 @@
     github-desktop
     fh
     dura
-    kubefirst
     mkcert
     ffmpeg
     volta
@@ -268,6 +273,9 @@
     swappy
     wlsunset
     python-launcher
+    github-copilot-cli
+    k3d
+    kubefirst
   ];
   home.file.".aws/config".text = ''
     [profile worldofgeese]
